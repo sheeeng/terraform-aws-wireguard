@@ -1,14 +1,14 @@
-#!/bin/bash -v
+#!/usr/bin/env bash --verbose
 add-apt-repository "ppa:wireguard/wireguard"
 apt-get update -y
-apt-get upgrade -y -o Dpkg::Options::="--force-confnew"
+apt-get upgrade -y -o Dpkg::Options::="--force-confnew" -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"
 apt-get install -y wireguard-dkms wireguard-tools awscli
 
 cat > /etc/wireguard/wg0.conf <<- EOF
 [Interface]
-Address = ${wg_server_net}
-PrivateKey = ${wg_server_private_key}
-ListenPort = ${wg_server_port}
+Address = ${wireguard_server_net}
+PrivateKey = ${wireguard_server_private_key}
+ListenPort = ${wireguard_server_port}
 PostUp   = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
 
@@ -27,7 +27,7 @@ chmod -R og-rwx /etc/wireguard/*
 sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
 sysctl -p
 ufw allow ssh
-ufw allow ${wg_server_port}/udp
+ufw allow ${wireguard_server_port}/udp
 ufw --force enable
 systemctl enable wg-quick@wg0.service
 systemctl start wg-quick@wg0.service

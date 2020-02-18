@@ -1,8 +1,7 @@
 provider "aws" {
-  version = "~> 2.0"
+  version = "~> 2"
 }
 
 provider "template" {
   version = "~> 2"
 }
-
