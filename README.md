@@ -66,78 +66,20 @@ A Terraform module to deploy a WireGuard VPN server on AWS. It can also used to 
 |`autoscaling_group_desired_capacity`|`integer`|Optional - default to `1`|Number of VPN servers to maintain, only makes sense in loadbalanced scenario.|
 |`autoscaling_group_max_size`|`integer`|Optional - default to `1`|Number of VPN servers to permit maximum, only makes sense in loadbalanced scenario.|
 |`instance_type`|`string`|Optional - defaults to `t2.micro`|Instance Size of VPN server.|
-<<<<<<< HEAD
-|`wireguard_server_net`|`cidr address and netmask`|Yes|The server ip allocation and net - wireguard_client_public_keys entries MUST be in this netmask range.|
-|`wireguard_client_public_keys`|`list`|Yes|List of maps of client IP/netmasks and public keys. See Usage for details. See Examples for formatting.|
-|`wireguard_server_port`|`integer`|Optional - defaults to `51820`|Port to run wireguard service on, wireguard standard is 51820.|
-|`wireguard_persistent_keepalive`|`integer`|Optional - defaults to `25`|Regularity of Keepalives, useful for NAT stability.|
-|`wireguard_server_private_key_param`|`string`|Optional - defaults to `/wireguard/wireguard-server-private-key`|The Parameter Store key to use for the VPN server Private Key.|
-=======
 |`wg_server_net`|`cidr address and netmask`|Yes|The server ip allocation and net - wg_client_public_keys entries MUST be in this netmask range.|
 |`wg_client_public_keys`|`list`|Yes|List of maps of client IP/netmasks and public keys. See Usage for details. See Examples for formatting.|
 |`wg_server_port`|`integer`|Optional - defaults to `51820`|Port to run wireguard service on, wireguard standard is 51820.|
 |`wg_persistent_keepalive`|`integer`|Optional - defaults to `25`|Regularity of Keepalives, useful for NAT stability.|
 |`wg_server_private_key_param`|`string`|Optional - defaults to `/wireguard/wg-server-private-key`|The Parameter Store key to use for the VPN server Private Key.|
->>>>>>> origin/master
 |`ami_id`|`string`|Optional - defaults to the newest Ubuntu 16.04 AMI|AMI to use for the VPN server.|
 
 ## Examples
 
 Please see the following examples to understand usage with the relevant options.
-<<<<<<< HEAD
-
-### Simple EIP/public subnet usage
-
-```terraform
-resource "aws_eip" "wireguard" {
-  vpc = true
-  tags = {
-    Name = "wireguard"
-  }
-}
-
-module "wireguard" {
-  source                = "git@github.com:sheeeng/terraform-aws-wireguard.git?ref=chore/review"
-  ssh_key_id            = "ssh-key-id-0987654"
-  vpc_id                = "vpc-01234567"
-  subnet_ids            = ["subnet-01234567"]
-  eip_id                = "${aws_eip.wireguard.id}"
-  wireguard_server_net         = "192.168.2.1/24" # client IPs MUST exist in this net
-  wireguard_client_public_keys = [
-    {"192.168.2.2/32" = "U1t4kAJxdUWWlAqZOknG0m9fJf22T6kpzQJxNYjgpmE="}, # make sure these are correct
-    {"192.168.2.3/32" = "AgjIG8xLfsQdvd+OUxBiVq47Z5JsQkBmYywhHme0ZFc="}, # wireguard is sensitive
-    {"192.168.2.255/32" = "9b9jliJ37/E2spqz2dxHzb79pwaK+Ln8nK3//RGY3kg="}, # to bad configuration
-  ]
-}
-```
-
-### Complex ELB/private subnet usage
-
-```terraform
-module "wireguard" {
-  source                        = "git@github.com:jmhale/terraform-wireguard.git"
-  ssh_key_id                    = "ssh-key-id-0987654"
-  vpc_id                        = "vpc-01234567"
-  additional_security_group_ids = [aws_security_group.wireguard_ssh_check.id] # for ssh health checks, see below
-  subnet_ids                    = ["subnet-76543210"] # You'll want a NAT gateway on this, but we don't document that.
-  target_group_arns             = ["arn:aws:elasticloadbalancing:eu-west-1:123456789:targetgroup/wireguard-production/123456789"]
-  autoscaling_group_min_size                  = 1 # a sensible minimum, which is also the default
-  autoscaling_group_desired_capacity          = 2 # we want two servers running most of the time
-  autoscaling_group_max_size                  = 5 # this cleanly permits us to allow rolling updates, growing and shrinking
-  associate_public_ip_address   = false # we don't want eip, we want all our traffic out of a single NAT for whitelisting simplicity
-  wireguard_server_net                 = "192.168.2.1/24" # client IPs MUST exist in this net
-  wireguard_client_public_keys = [
-    {"192.168.2.2/32" = "QFX/DXxUv56mleCJbfYyhN/KnLCrgp7Fq2fyVOk/FWU="}, # make sure these are correct
-    {"192.168.2.3/32" = "+IEmKgaapYosHeehKW8MCcU65Tf5e4aXIvXGdcUlI0Q="}, # wireguard is sensitive
-    {"192.168.2.4/32" = "WO0tKrpUWlqbl/xWv6riJIXipiMfAEKi51qvHFUU30E="}, # to bad configuration
-  ]
-}
-=======
 
 ### Simple EIP/public subnet usage
 
 See [examples/simple_eip/main.tf](examples/simple_eip/main.tf) file.
->>>>>>> origin/master
 
 ### Complex ELB/private subnet usage
 
