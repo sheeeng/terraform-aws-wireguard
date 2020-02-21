@@ -59,7 +59,11 @@ variable "eip_id" {
 variable "additional_security_group_ids" {
   type        = list(string)
   default     = [""]
+<<<<<<< HEAD
   description = "Additional security groups if provided. Default is empty."
+=======
+  description = "Additional security groups if provided, default empty."
+>>>>>>> origin/master
 }
 
 variable "target_group_arns" {
@@ -69,16 +73,29 @@ variable "target_group_arns" {
 }
 
 variable "env" {
+<<<<<<< HEAD
   default     = "production"
   description = "The name of environment for WireGuard. Used to differentiate multiple deployments. Default is production."
 }
 
 variable "wireguard_server_private_key_parameter" {
   default     = "/wireguard/wireguard-server-private-key"
+=======
+  default     = "prod"
+  description = "The name of environment for WireGuard. Used to differentiate multiple deployments."
+}
+
+variable "wg_server_private_key_param" {
+  default     = "/wireguard/wg-server-private-key"
+>>>>>>> origin/master
   description = "The SSM parameter containing the WG server private key."
 }
 
 variable "ami_id" {
   default     = null # we check for this and use a data provider since we can't use it here
+<<<<<<< HEAD
   description = "The AWS AMI to use for the WG server, defaults to the latest Ubuntu 18.04 AMI if not specified."
+=======
+  description = "The AWS AMI to use for the WG server, defaults to the latest Ubuntu 16.04 AMI if not specified."
+>>>>>>> origin/master
 }

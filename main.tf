@@ -60,12 +60,21 @@ resource "aws_launch_configuration" "wireguard_launch_configuration" {
   }
 }
 
+<<<<<<< HEAD
 resource "aws_autoscaling_group" "wireguard_autoscaling_group" {
   name                 = aws_launch_configuration.wireguard_launch_configuration.name
   launch_configuration = aws_launch_configuration.wireguard_launch_configuration.name
   min_size             = var.autoscaling_group_min_size
   desired_capacity     = var.autoscaling_group_desired_capacity
   max_size             = var.autoscaling_group_max_size
+=======
+resource "aws_autoscaling_group" "wireguard_asg" {
+  name                 = aws_launch_configuration.wireguard_launch_config.name
+  launch_configuration = aws_launch_configuration.wireguard_launch_config.name
+  min_size             = var.asg_min_size
+  desired_capacity     = var.asg_desired_capacity
+  max_size             = var.asg_max_size
+>>>>>>> origin/master
   vpc_zone_identifier  = var.subnet_ids
   health_check_type    = "EC2"
   termination_policies = ["OldestLaunchConfiguration", "OldestInstance"]
@@ -78,7 +87,11 @@ resource "aws_autoscaling_group" "wireguard_autoscaling_group" {
   tags = [
     {
       key                 = "Name"
+<<<<<<< HEAD
       value               = aws_launch_configuration.wireguard_launch_configuration.name
+=======
+      value               = aws_launch_configuration.wireguard_launch_config.name
+>>>>>>> origin/master
       propagate_at_launch = true
     },
     {

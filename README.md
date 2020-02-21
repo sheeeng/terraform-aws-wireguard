@@ -66,16 +66,25 @@ A Terraform module to deploy a WireGuard VPN server on AWS. It can also used to 
 |`autoscaling_group_desired_capacity`|`integer`|Optional - default to `1`|Number of VPN servers to maintain, only makes sense in loadbalanced scenario.|
 |`autoscaling_group_max_size`|`integer`|Optional - default to `1`|Number of VPN servers to permit maximum, only makes sense in loadbalanced scenario.|
 |`instance_type`|`string`|Optional - defaults to `t2.micro`|Instance Size of VPN server.|
+<<<<<<< HEAD
 |`wireguard_server_net`|`cidr address and netmask`|Yes|The server ip allocation and net - wireguard_client_public_keys entries MUST be in this netmask range.|
 |`wireguard_client_public_keys`|`list`|Yes|List of maps of client IP/netmasks and public keys. See Usage for details. See Examples for formatting.|
 |`wireguard_server_port`|`integer`|Optional - defaults to `51820`|Port to run wireguard service on, wireguard standard is 51820.|
 |`wireguard_persistent_keepalive`|`integer`|Optional - defaults to `25`|Regularity of Keepalives, useful for NAT stability.|
 |`wireguard_server_private_key_param`|`string`|Optional - defaults to `/wireguard/wireguard-server-private-key`|The Parameter Store key to use for the VPN server Private Key.|
+=======
+|`wg_server_net`|`cidr address and netmask`|Yes|The server ip allocation and net - wg_client_public_keys entries MUST be in this netmask range.|
+|`wg_client_public_keys`|`list`|Yes|List of maps of client IP/netmasks and public keys. See Usage for details. See Examples for formatting.|
+|`wg_server_port`|`integer`|Optional - defaults to `51820`|Port to run wireguard service on, wireguard standard is 51820.|
+|`wg_persistent_keepalive`|`integer`|Optional - defaults to `25`|Regularity of Keepalives, useful for NAT stability.|
+|`wg_server_private_key_param`|`string`|Optional - defaults to `/wireguard/wg-server-private-key`|The Parameter Store key to use for the VPN server Private Key.|
+>>>>>>> origin/master
 |`ami_id`|`string`|Optional - defaults to the newest Ubuntu 16.04 AMI|AMI to use for the VPN server.|
 
 ## Examples
 
 Please see the following examples to understand usage with the relevant options.
+<<<<<<< HEAD
 
 ### Simple EIP/public subnet usage
 
@@ -123,51 +132,16 @@ module "wireguard" {
     {"192.168.2.4/32" = "WO0tKrpUWlqbl/xWv6riJIXipiMfAEKi51qvHFUU30E="}, # to bad configuration
   ]
 }
+=======
 
-resource "aws_lb" "wireguard" {
-  name                             = "wireguard"
-  load_balancer_type               = "network"
-  internal                         = false
-  subnets                          = ["subnet-876543210"] # typically a public subnet
-}
+### Simple EIP/public subnet usage
 
-resource "aws_security_group" "wireguard_ssh_check" {
-  name   = "wireguard_ssh_check"
-  vpc_id = "vpc-01234567"
+See [examples/simple_eip/main.tf](examples/simple_eip/main.tf) file.
+>>>>>>> origin/master
 
-  # SSH access from the CIDR, which allows our healthcheck to complete
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = 192.168.1.0/24 # range that covers public subnet_ids, aws_lb will check the hosts from these ranges
-  }
-}
+### Complex ELB/private subnet usage
 
-resource "aws_lb_target_group" "wireguard" {
-  name_prefix          = "wireguard"
-  port                 = 51820
-  protocol             = "UDP"
-  vpc_id               = "vpc-01234567"
-
-  health_check {
-    port     = 22 # make sure to add additional_security_group_ids with a rule to allow ssh from the loadbalancer range so this test passes.
-    protocol = "TCP"
-  }
-
-}
-
-resource "aws_lb_listener" "wireguard" {
-  load_balancer_arn = aws_lb.wireguard.arn
-  port              = 51820
-  protocol          = "UDP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.wireguard.arn
-  }
-}
-```
+See [examples/complex_elb/main.tf](examples/complex_elb/main.tf) file.
 
 ## Output
 
